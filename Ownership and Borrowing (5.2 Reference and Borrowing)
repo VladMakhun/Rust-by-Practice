@@ -1,0 +1,157 @@
+1. Fill the blanks
+fn main() {
+    let x = 5;
+    // Fill the blank
+    let p = &x; // Get a reference to x
+
+    println!("the memory address of x is {:p}", p); // One possible output: 0x16fa3ac84
+}
+
+
+2. 
+fn main() {
+    let x = 5;
+    let y = &x;
+
+    // Modify this line only
+    assert_eq!(5, *y); // Dereference y to get the value it points to
+
+    println!("Success!");
+}
+
+
+3.  Fix error
+
+fn main() {
+    let mut s = String::from("hello, ");
+
+    borrow_object(&s); // Pass a reference to s
+
+    println!("Success!");
+}
+
+fn borrow_object(s: &String) {}
+
+
+4. 
+fn main() {
+    let mut s = String::from("hello, ");
+
+    push_str(&mut s); // Pass a mutable reference to s
+
+    println!("Success!");
+}
+
+fn push_str(s: &mut String) {
+    s.push_str("world");
+}
+
+
+5. 
+
+fn main() {
+    let mut s = String::from("hello, ");
+
+    // Fill the blank to make it work
+    let p = &mut s; // Create a mutable reference to s
+    
+    p.push_str("world"); // Modify the string through the reference
+
+    println!("Success!");
+}
+
+
+6. 
+fn main() {
+    let c = '中';
+
+    let r1 = &c;
+    // Fill the blank, don't change other code
+    let r2 = &c; // Make r2 a reference to c
+
+    assert_eq!(*r1, *r2);
+    
+    // Check the equality of the two address strings
+    assert_eq!(get_addr(r1), get_addr(r2));
+
+    println!("Success!");
+}
+
+// Get memory address string
+fn get_addr(r: &char) -> String {
+    format!("{:p}", r)
+}
+
+7.  Remove something to make it work.  Don't remove a whole line !
+
+fn main() {
+    let mut s = String::from("hello");
+
+    let r1 = &mut s;
+    // Remove the mutable reference
+    // let r2 = &mut s; // This line can be removed to avoid borrowing conflict.
+
+    println!("{}", r1); // Now, only r1 is used
+
+    println!("Success!");
+}
+
+
+8. 🌟 Error: Borrow an immutable object as mutable
+
+fn main() {
+    // Fix error by modifying this line
+    let mut s = String::from("hello, "); // Make `s` mutable
+
+    borrow_object(&mut s); // Pass a mutable reference to the function
+
+    println!("Success!");
+}
+
+fn borrow_object(s: &mut String) {}
+
+
+9. 🌟🌟 Ok: Borrow a mutable object as immutable
+
+
+fn main() {
+    let mut s = String::from("hello, ");
+
+    borrow_object(&s);  // Borrowing an immutable reference
+    
+    s.push_str("world");  // Modifying the string
+
+    println!("Success!");
+}
+
+fn borrow_object(s: &String) {} // Takes an immutable reference
+
+
+10. Comment one line to make it work
+
+fn main() {
+    let mut s = String::from("hello, ");
+
+    let r1 = &mut s;
+    r1.push_str("world");
+    // let r2 = &mut s; // Commenting out this line allows `r1` to exist without conflict
+    // r2.push_str("!"); // This line becomes unnecessary if `r2` is commented out
+    
+    println!("{}", r1); // Prints "hello, world"
+}
+
+
+11.
+fn main() {
+    let mut s = String::from("hello, ");
+
+    let r1 = &mut s; // Mutable reference r1
+    let r2 = &mut s; // Mutable reference r2, which will cause a compiler error
+
+    // Attempt to use both r1 and r2 simultaneously
+    r1.push_str("world");
+    r2.push_str("!"); // This line will trigger the error
+
+    println!("{} {}", r1, r2); // Trying to print both r1 and r2
+}
+
