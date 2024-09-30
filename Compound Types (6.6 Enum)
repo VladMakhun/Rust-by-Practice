@@ -1,0 +1,126 @@
+1. 🌟🌟 Enums can be created with explicit discriminator.
+
+enum Number {
+    Zero,
+    One,
+    Two,
+}
+
+enum Number1 {
+    Zero = 0,
+    One,
+    Two,
+}
+
+enum Number2 {
+    Zero = 0,
+    One = 1,
+    Two = 2,
+}
+
+fn main() {
+    // Convert enum variants to integers
+    assert_eq!(Number1::One as u8, 1); // Compare with integer value
+    assert_eq!(Number2::One as u8, 1); // Compare with integer value
+
+    println!("Success!");
+}
+
+2. 🌟 Each enum variant can hold its own data.
+
+enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+
+fn main() {
+    let msg1 = Message::Move { x: 1, y: 2 }; // Instantiating with x = 1, y = 2 
+    let msg2 = Message::Write(String::from("hello, world!")); // Instantiating with "hello, world!"
+
+    println!("Success!");
+}
+
+3. 🌟🌟 We can get the data which an enum variant is holding by pattern match.
+enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+
+fn main() {
+    let msg = Message::Move { x: 1, y: 2 };
+
+    if let Message::Move { x: a, y: b } = msg { // Destructure x and y into a and b
+        assert_eq!(a, 1); // You can change this assertion based on your expectations
+        assert_eq!(b, 2); // You can change this assertion based on your expectations
+    } else {
+        panic!("NEVER LET THIS RUN！");
+    }
+
+    println!("Success!");
+}
+
+4. Fill in the blank and fix the errors
+use std::fmt;
+
+enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+
+// Implementing the Display trait for the Message enum
+impl fmt::Display for Message {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Message::Quit => write!(f, "Quit"),
+            Message::Move { x, y } => write!(f, "Move to ({}, {})", x, y),
+            Message::Write(s) => write!(f, "Write: {}", s),
+            Message::ChangeColor(r, g, b) => write!(f, "ChangeColor to RGB({}, {}, {})", r, g, b),
+        }
+    }
+}
+
+fn main() {
+    let msgs: [Message; 3] = [ // Fill the blank with [Message; 3]
+        Message::Quit,
+        Message::Move { x: 1, y: 3 },
+        Message::ChangeColor(255, 255, 0),
+    ];
+
+    for msg in msgs {
+        show_message(msg);
+    }
+} 
+
+fn show_message(msg: Message) {
+    println!("{}", msg);
+}
+
+5. 🌟🌟 Since there is no null in Rust, we have to use enum Option<T> to deal with the cases when the value is absent.
+
+fn main() {
+    let five = Some(5);
+    let six = plus_one(five);
+    let none = plus_one(None);
+
+    if let Some(n) = six { // Fill in the blank to check if `six` is Some
+        println!("{}", n);
+        println!("Success!");
+    } else {
+        return; // Prevent panic by returning if `six` is None
+    }
+        
+    panic!("NEVER LET THIS RUN！");
+} 
+
+fn plus_one(x: Option<i32>) -> Option<i32> {
+    match x {
+        None => None, // Fill in the blank to return None when x is None
+        Some(i) => Some(i + 1), // Fill in the blank to add 1 when x is Some
+    }
+}
