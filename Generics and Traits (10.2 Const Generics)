@@ -1,0 +1,73 @@
+1. 🌟🌟 <T, const N: usize> is part of the struct type, it means Array<i32, 3> and Array<i32, 4> are different types.
+struct Array<T, const N: usize> {
+    data: [T; N],
+}
+
+fn main() {
+    let arrays = (
+        Array {
+            data: [1, 2, 3], // Array<i32, 3>
+        },
+        Array {
+            data: [1.0, 2.0, 3.0], // Array<f64, 3>
+        },
+        Array {
+            data: [1, 2], // Array<i32, 2>
+        },
+    );
+
+    println!("Success!");
+}
+
+2.  Fill in the blanks to make it work.
+
+fn print_array<T, const N: usize>(arr: [T; N])
+where
+    T: std::fmt::Debug,
+{
+    println!("{:?}", arr);
+}
+
+fn main() {
+    let arr = [1, 2, 3];
+    print_array(arr);
+
+    let arr = ["hello", "world"];
+    print_array(arr);
+}
+
+3. 🌟🌟🌟 Sometimes we want to limit the size of a variable, e.g when using in embedding environments, then const expressions will fit your needs.
+
+#![allow(incomplete_features)]
+#![feature(generic_const_exprs)]
+
+fn check_size<T>(val: T)
+where
+    Assert<{ core::mem::size_of::<T>() < 768 }>: IsTrue,
+{
+    //...
+}
+
+// Fix the errors in main.
+fn main() {
+    check_size([0u8; 767]); // Total size: 767 bytes
+    check_size([0i32; 191]); // Total size: 191 * 4 bytes = 764 bytes
+
+    // A &str is a reference, and its size is fixed (typically 16 bytes on 64-bit systems).
+    check_size(["hello你好"; 47]); // Size of &str: 16 * 47 = 752 bytes
+
+    // `String` size involves a heap allocation, but as a stack-allocated value, it's usually 24 bytes.
+    check_size([(); 31].map(|_| "hello你好".to_string()));  // Size of String: 31 * 24 = 744 bytes
+
+    // A `char` in Rust is 4 bytes (UTF-32 representation).
+    check_size(['中'; 191]); // Size of char: 4 * 191 = 764 bytes
+
+    println!("Success!");
+}
+
+pub enum Assert<const CHECK: bool> {}
+
+pub trait IsTrue {}
+
+impl IsTrue for Assert<true> {}
+
