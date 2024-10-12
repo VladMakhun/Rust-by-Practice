@@ -1,0 +1,130 @@
+1. 
+use std::fmt;
+
+struct Structure(i32);
+
+// Implement the Debug trait for the Structure
+impl fmt::Debug for Structure {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Structure({})", self.0)
+    }
+}
+
+fn main() {
+    // Types in std and Rust have implemented the fmt::Debug trait
+    println!("{} months in a year.", 12); // Fill in the blank here
+
+    println!("Now {:?} will print!", Structure(3)); // Fill in the blank here
+}
+
+2. 🌟🌟 So fmt::Debug definitely makes one type printable, but sacrifices some elegance. Maybe we can get more elegant by replacing {:?} with something else( but not {} !)
+
+#[derive(Debug)]
+struct Person {
+    name: String,
+    age: u8,
+}
+
+// Implement the Display trait for Person
+use std::fmt;
+
+impl fmt::Display for Person {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Person {{\n    name: \"{}\",\n    age: {},\n}}", self.name, self.age)
+    }
+}
+
+fn main() {
+    let person = Person { name: "Sunface".to_string(), age: 18 };
+
+    // Use Display trait for a nicer output
+    println!("{}", person);
+}
+
+3. 🌟🌟 We can also manually implement Debug trait for our types
+
+use std::fmt;
+
+#[derive(Debug)]
+struct Structure(i32);
+
+#[derive(Debug)]
+struct Deep(Structure);
+
+// Implement fmt::Debug for Deep to customize output
+impl fmt::Debug for Deep {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // Access the inner Structure and format its value
+        write!(f, "{}", self.0 .0) // Prints the inner i32 value directly
+    }
+}
+
+fn main() {    
+    // This will now print the value directly
+    println!("Now {:?} will print!", Deep(Structure(7)));
+}
+
+
+4. 
+use std::fmt;
+
+struct Point2D {
+    x: f64,
+    y: f64,
+}
+
+// Implement the Display trait for Point2D
+impl fmt::Display for Point2D {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Display: {} + {}i", self.x, self.y) // Format as required for Display
+    }
+}
+
+// Implement the Debug trait for Point2D
+impl fmt::Debug for Point2D {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Debug: Complex {{ real: {}, imag: {} }}", self.x, self.y) // Format as required for Debug
+    }
+}
+
+fn main() {
+    let point = Point2D { x: 3.3, y: 7.2 };
+    assert_eq!(format!("{}", point), "Display: 3.3 + 7.2i");
+    assert_eq!(format!("{:?}", point), "Debug: Complex { real: 3.3, imag: 7.2 }");
+    
+    println!("Success!");
+}
+
+5. 
+use std::fmt; 
+
+struct List(Vec<i32>);
+
+impl fmt::Display for List {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // Extract the value using tuple indexing,
+        // and create a reference to `vec`.
+        let vec = &self.0;
+
+        write!(f, "[")?;
+
+        // Iterate over `v` in `vec` while enumerating the iteration
+        // count in `count`.
+        for (count, v) in vec.iter().enumerate() {
+            // For every element except the first, add a comma.
+            // Use the ? operator to return on errors.
+            if count != 0 { write!(f, ", ")?; }
+            write!(f, "{}: {}", count, v)?; // Format as "count: value"
+        }
+
+        // Close the opened bracket and return a fmt::Result value.
+        write!(f, "]")
+    }
+}
+
+fn main() {
+    let v = List(vec![1, 2, 3]);
+    assert_eq!(format!("{}", v), "[0: 1, 1: 2, 2: 3]"); // Check expected output
+    println!("Success!");
+}
+
