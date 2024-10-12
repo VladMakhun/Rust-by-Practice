@@ -1,0 +1,130 @@
+1. fn main() {
+    println!("{0}, this is {1}. {1}, this is {0}", "Alice", "Bob"); // => Alice, this is Bob. Bob, this is Alice
+    assert_eq!(format!("{1}{0}", 1, 2), "21"); // Fill this blank
+    assert_eq!(format!("{1}{0}{1}{0}", 1, 2), "2112"); // Fill this blank
+    println!("Success!");
+}
+
+2. 
+fn main() {
+    println!("{argument}", argument = "test"); // => "test"
+
+    /* Fill in the blanks */
+    assert_eq!(format!("{name}{}", 1, name = "2"), "21"); // Fill this blank
+    assert_eq!(format!("{a} {c} {b}", a = "a", b = 'b', c = 3), "a 3 b"); // Fill this blank
+    
+    /* Fix the error */
+    // Named argument must be placed after other arguments
+    println!("{abc} {0}", abc = "def", 2); // Fix the error here
+
+    println!("Success!");
+}
+
+3.🌟🌟 By default, you can pad string with spaces
+fn main() {
+    // The following two are padding with 5 spaces
+    println!("Hello {:5}!", "x"); // =>  "Hello x    !"  
+    println!("Hello {:1$}!", "x", 5); // =>  "Hello x    !"
+
+    /* Fill in the blanks */
+    assert_eq!(format!("Hello {:width$}!", "x", width = 5), "Hello x    !"); // Fill this blank
+    assert_eq!(format!("Hello {:1$}!", "x", 5), "Hello x    !"); // Fill this blank
+
+    println!("Success!");
+}
+
+4. 🌟🌟🌟 Left align, right align, pad with specified characters.
+
+fn main() {
+    // Left align
+    println!("Hello {:<5}!", "x"); // => Hello x    !
+    // Right align
+    assert_eq!(format!("Hello {:>5}!", "x"), "Hello     x!"); // Right-align with padding
+    // Center align
+    assert_eq!(format!("Hello {:^5}!", "x"), "Hello   x  !"); // Center-align with padding
+
+    // Left align, pad with '&'
+    assert_eq!(format!("Hello {:&<5}!", "x"), "Hello x&&&!"); // Fill this blank
+
+    println!("Success!");
+}
+
+5. fn main() {
+    println!("Hello {:5}!", 5); // => Hello     5!
+    println!("Hello {:+}!", 5); // =>  Hello +5!
+    println!("Hello {:05}!", 5); // => Hello 00005!
+    println!("Hello {:05}!", -5); // => Hello -0005!
+
+    /* Fill in the blank */
+    assert!(format!("{number:0>width$}", number=1, width=6) == "000001"); // Fill in with "000001"
+    
+    println!("Success!");
+}
+
+6.🌟🌟 Floating point precision
+fn main() {
+    let v = 3.1415926;
+
+    println!("{:.1$}", v, 4); // same as {:.4} => 3.1416 
+
+    assert_eq!(format!("{:.2}", v), "3.14"); // Fill in with "{:.2}"
+    assert_eq!(format!("{:+.2}", v), "+3.14"); // Fill in with "{:+.2}"
+    assert_eq!(format!("{:.0}", v), "3"); // Fill in with "{:.0}"
+
+    println!("Success!");
+}
+
+7.🌟🌟🌟 String length
+fn main() {
+    let s = "Hello, world!";
+
+    println!("{0:.5}", s); // => Hello
+
+    assert_eq!(format!("Hello {1:.3}!", 3, "abcdefg"), "Hello abc!"); // Fill in with "{1:.3}"
+
+    println!("Success!");
+}
+
+8. fn main() {
+    assert_eq!(format!("{:b}", 27), "11011"); // Fill in with "{:b}"
+    assert_eq!(format!("{:o}", 27), "33");    // Fill in with "{:o}"
+    assert_eq!(format!("{:x}", 27), "1b");    // Fill in with "{:x}"
+    assert_eq!(format!("{:X}", 27), "1B");    // Fill in with "{:X}"
+
+    println!("{:x}!", 27); // Hex with no prefix => 1b
+
+    println!("{:#010b}", 27); // Pad binary with 0, width = 10,  => 0b00011011
+
+    println!("Success!");
+}
+
+9. 
+fn get_person() -> String {
+    String::from("sunface")
+}
+
+fn get_format() -> (usize, usize) {
+    (4, 1)
+}
+
+fn main() {
+    let person = get_person();
+    println!("Hello, {person}!");
+
+    let (width, precision) = get_format();
+    let scores = [("sunface", 99.12), ("jack", 60.34)];
+    
+    /* Make it print:
+    sunface: 99.1
+    jack: 60.3
+    */
+    for (name, score) in scores {
+        // Using width and precision to format the score
+        println!("{name}: {:width.*}", score, precision);
+    }
+}
+
+
+
+
+
