@@ -1,0 +1,87 @@
+1. 
+fn main() {
+    let decimal = 97.123_f32;
+
+    let integer: u8 = decimal as u8; // Fill in the blank with `u8`
+
+    let c1: char = decimal as char;
+    let c2 = integer as char;
+
+    assert_eq!(integer, 'b' as u8);
+
+    println!("Success!");
+}
+
+2. fn main() {
+    assert_eq!(u8::MAX, 255);
+
+    let v = 255; // Change the value here to be within the u8 range
+
+    println!("Success!");
+}
+
+3. 🌟🌟 When casting any value to an unsigned type T, T::MAX + 1 is added or subtracted until the value fits into the new type.
+
+fn main() {
+    assert_eq!(1000 as u16, 1000); // Casting 1000 to u16 remains 1000.
+
+    assert_eq!(1000 as u8, 244); // 1000 mod 256 is 244, since u8 can only hold values from 0 to 255.
+
+    // For positive numbers, this is the same as the modulus
+    println!("1000 mod 256 is : {}", 1000 % 256);
+
+    assert_eq!(-1_i8 as u8, 255); // -1 as u8 wraps around to 255.
+
+    // Since Rust 1.45, the `as` keyword performs a *saturating cast* 
+    // when casting from float to int. If the floating point value exceeds 
+    // the upper bound or is less than the lower bound, the returned value 
+    // will be equal to the bound crossed.
+    assert_eq!(300.1_f32 as u8, 255); // 300.1 exceeds u8 max of 255, saturates to 255.
+    assert_eq!(-100.1_f32 as u8, 0); // -100.1 is less than 0, saturates to 0.
+    
+
+    // This behavior incurs a small runtime cost and can be avoided 
+    // with unsafe methods, however the results might overflow and 
+    // return **unsound values**. Use these methods wisely:
+    unsafe {
+        // 300.0 is 44
+        println!("300.0 is {}", 300.0_f32.to_int_unchecked::<u8>());
+        // -100.0 as u8 is 156
+        println!("-100.0 as u8 is {}", (-100.0_f32).to_int_unchecked::<u8>());
+        // nan as u8 is 0
+        println!("nan as u8 is {}", f32::NAN.to_int_unchecked::<u8>());
+    }
+}
+
+4. 🌟🌟🌟 Raw pointers can be converted to memory address (integer) and vice versa.
+
+fn main() {
+    let mut values: [i32; 2] = [1, 2];
+    let p1: *mut i32 = values.as_mut_ptr(); // Get a mutable pointer to the first element of the array
+    let first_address: usize = p1 as usize; // Cast pointer to usize
+    let second_address = first_address + 4; // 4 == std::mem::size_of::<i32>(): Get the address of the second element
+    let p2: *mut i32 = second_address as *mut i32; // Cast usize back to *mut i32
+    unsafe {
+        // Add one to the second element
+        *p2 += 1; // Dereference p2 to modify the value at that address
+    }
+    
+    assert_eq!(values[1], 3); // Check if the second element is now 3
+
+    println!("Success!"); // Print success message
+}
+
+
+5. 
+fn main() {
+    let arr: [u64; 13] = [0; 13];
+    assert_eq!(std::mem::size_of_val(&arr), 8 * 13);
+    let a: *const [u64] = &arr;
+    let b = a as *const [u8];
+    unsafe {
+        assert_eq!(std::mem::size_of_val(&*b), 8 * 13); // Fill in the blank
+    }
+
+    println!("Success!");
+}
+
